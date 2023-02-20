@@ -17,7 +17,7 @@ export default function AddHand() {
 
     let navigate=useNavigate();
 
-    const{date, cards, position, stakes, history, link, notes, result} = hand;
+    const{date, cards, position, stakes, h, link, notes, result} = hand;
 
     const onInputChange = (e) => {
         setHand({...hand, [e.target.name]:e.target.value});
@@ -107,6 +107,23 @@ export default function AddHand() {
                                     id="stakes"
                                     name="stakes"
                                     value={stakes}
+                                    onChange={(e) => onInputChange(e)}
+                                >
+                                </input>
+
+                                <br />
+
+                                <label htmlFor="History" className="form-label">
+                                    History
+                                </label>
+
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Hand History writeup"
+                                    id="history"
+                                    name="history"
+                                    value={h}
                                     onChange={(e) => onInputChange(e)}
                                 >
                                 </input>
