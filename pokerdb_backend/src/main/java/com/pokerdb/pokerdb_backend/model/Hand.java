@@ -1,8 +1,11 @@
 package com.pokerdb.pokerdb_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
+import java.sql.Date; // Date without a time
 
 @Entity
 public class Hand {
@@ -13,7 +16,8 @@ public class Hand {
     private String cards;
 
     private String position;
-    private Integer result;
+
+    private Float result;
 
     private String notes;
 
@@ -23,6 +27,11 @@ public class Hand {
 
     private String stakes;
 
+    private Date date;
+
+    public String toString() {
+        return " cards: " + cards + " position: " + position + "\n";
+    }
     public String getNotes() {
         return notes;
     }
@@ -71,11 +80,11 @@ public class Hand {
         this.position = position;
     }
 
-    public Integer getResult() {
+    public Float getResult() {
         return result;
     }
 
-    public void setResult(Integer result) {
+    public void setResult(Float result) {
         this.result = result;
     }
 
@@ -88,6 +97,13 @@ public class Hand {
     }
 
 
+    public Date getDate() {
+        return date;
+    }
 
-
+    // You need to do some error handling here
+    public void setDate(String input) {
+        System.out.println(input);
+        this.date = Date.valueOf(input);
+    }
 }
