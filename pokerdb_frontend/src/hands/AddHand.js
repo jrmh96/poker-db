@@ -67,6 +67,9 @@ export default function AddHand() {
         setHand({ ...hand, [passedEvent["name"]]: passedEvent["value"] });
     }
 
+    const calculateStakes = () => {
+        
+    }
     const UnitButton = () => {
         return (
             <button
