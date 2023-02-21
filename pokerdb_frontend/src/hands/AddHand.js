@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../buttondropdown.css';
 
 export default function AddHand() {
+
     // Format date util function
     const formatDate = (date) => {
         // input: javascript Date object
@@ -23,7 +24,7 @@ export default function AddHand() {
         date: formatDate(new Date()),
         cards: "",
         position: "",
-        stakes: ".1", // Do we want to make stakes as BB in $ or do we want to make it string e.g. 50NL, then clean the output later - I think dropdown menu with limited options and corresponding state makes sense
+        stakes: ".1",
         history: "",
         link: "",
         notes: "",
@@ -46,30 +47,58 @@ export default function AddHand() {
             passedEvent["value"] = e.target.value;
         }
 
-        // if(passedEvent["name"] === "stakes") {
-        //     const cents = stakes*100;
-        //     const gameType = "Online"
-        //     passedEvent.value = cents.toString()+"NL " + gameType; // Define gametype as state
-        // } // Define this data cleaning in the axios post request, not here 
-        
-        // MOVE THIS LOGIC TO RIGHT BEFORE AXIOS POST REQUEST - causes issues to have results value exactly mirror the dollar amount
-        if (units === "BB" && passedEvent["name"] === "result") {
-            const stakesNumber = parseFloat(stakes);
-            let resultNumber = parseFloat(passedEvent["value"]);
-            if(isNaN(stakesNumber) || isNaN(resultNumber)) {
-                throw new TypeError("BB or result value is not valid");
-            } else {
-                resultNumber *= stakesNumber;
-                passedEvent["value"] = resultNumber.toString();
-            }
-        }
-
         setHand({ ...hand, [passedEvent["name"]]: passedEvent["value"] });
     }
 
-    const calculateStakes = () => {
-        
+    const cancel = (e) => {
+        setHand({
+            date: formatDate(new Date()),
+            cards: "",
+            position: "",
+            stakes: ".1",
+            history: "",
+            link: "",
+            notes: "",
+            result: ""
+        });
+
+        setDate(formatDate(new Date()));
+        setUnits("BB");
+        navigate("/");
     }
+
+    const calculateResults = () => {
+        // MOVE THIS LOGIC TO RIGHT BEFORE AXIOS POST REQUEST - causes issues to have results value exactly mirror the dollar amount
+        const stakesNumber = parseFloat(stakes);
+        let resultNumber = parseFloat(result);
+        if (isNaN(stakesNumber) || isNaN(resultNumber)) {
+            throw new TypeError("BB or result value is not valid");
+        }
+        if (units === "BB") {
+            resultNumber *= stakesNumber;
+        }
+
+        return resultNumber.toString();
+    }
+
+    // Submit to axios
+    let navigate = useNavigate();
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        hand.result = calculateResults();
+        await axios.post("http://localhost:8080/addhand", hand, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).catch(function (error) {
+            if (error.response) {
+                console.log("The message sent: ")
+                console.log(JSON.parse(error.config.data));
+            }
+        });
+        navigate("/");
+    }
+
     const UnitButton = () => {
         return (
             <button
@@ -88,7 +117,8 @@ export default function AddHand() {
         <div className="container">
             <div className="row">
                 <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-                    <form>
+                    <h2 className="my-3">Add Hand</h2>
+                    <form onSubmit={(e) => onSubmit(e)}>
                         <div className="mb-3">
                             <div className="row my-3">
                                 <div className="col-md-4"></div>
@@ -135,9 +165,10 @@ export default function AddHand() {
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <select className="form-select" 
-                                            defaultValue={".1"} 
+                                            defaultValue={stakes} 
                                             aria-label="Select Stakes" 
                                             id="stakes"
+                                            name="stakes"
                                             onChange={(e) => onInputChange(e)}>
                                             <option value=".1">10NL Online</option>
                                             <option value=".2">20NL Online</option>
@@ -222,8 +253,9 @@ export default function AddHand() {
                                     </ul>
                                 </div>
                                 </div>
-
                             </div>
+                            <button type="submit" className="btn btn-outline-primary">Submit</button>
+                            <button type="button" onClick={(e) => cancel(e)} className="btn btn-outline-danger mx-4">Cancel</button>
                         </div>
                     </form>
                 </div>

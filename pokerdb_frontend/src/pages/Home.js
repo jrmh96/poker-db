@@ -37,7 +37,7 @@ export default function Home() {
                         <tbody>
                             {
                                 hands.map((hand, index) => (
-                                    <tr>
+                                    <tr key={index}>
                                         <th scope="row" key={index}>{index+1}</th>
                                         <td>{moment(hand.date).format("M/D/YYYY")}</td>
                                         <td>{hand.cards}</td>
