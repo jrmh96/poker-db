@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import '../buttondropdown.css';
+import { bbToStrMap } from '../utils/stakesFunctions.js';
 
 export default function AddHand() {
 
@@ -35,7 +36,13 @@ export default function AddHand() {
     const { _date, cards, position, stakes, h, link, notes, result } = hand;
 
     const [units, setUnits] = useState("BB");
-    
+
+    // Wrap set units so that screen doesn't scroll
+    const setUnitWrapper = (e) => {
+        e.preventDefault();
+        setUnits(e.target.name);
+    }
+
     const onInputChange = (e) => {
         const passedEvent = { name: "", value: ""}
         if (e instanceof Date) {
@@ -85,8 +92,11 @@ export default function AddHand() {
     let navigate = useNavigate();
     const onSubmit = async (e) => {
         e.preventDefault();
-        hand.result = calculateResults();
-        await axios.post("http://localhost:8080/addhand", hand, {
+        let objToPost = hand;
+        objToPost.result = calculateResults();
+        objToPost.stakes = bbToStrMap[hand.stakes];
+        console.log(objToPost);
+        await axios.post("http://localhost:8080/addhand", objToPost, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -117,7 +127,7 @@ export default function AddHand() {
         <div className="container">
             <div className="row">
                 <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-                    <h2 className="my-3">Add Hand</h2>
+                    <h2 className="textCenter m-4">Add Hand</h2>
                     <form onSubmit={(e) => onSubmit(e)}>
                         <div className="mb-3">
                             <div className="row my-3">
@@ -173,7 +183,7 @@ export default function AddHand() {
                                             <option value=".1">10NL Online</option>
                                             <option value=".2">20NL Online</option>
                                             <option value=".25">25NL Online</option>
-                                            <option value=".50">50NL Online</option>
+                                            <option value=".5">50NL Online</option>
                                             <option value="2">1/2 Live</option>
                                             <option value="3">1/3 Live</option>
                                             <option value="5">2/5 Live</option>
@@ -248,8 +258,8 @@ export default function AddHand() {
                                 <div className="dropdown">
                                     <UnitButton />
                                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnits("BB")} href="#">BB</a></li>
-                                        <li><a className="col-md-2 dropdown-item" name="Dollars" onClick={(e) => setUnits("Dollars")} href="#">Dollars</a></li>
+                                        <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnitWrapper(e)} href="#">BB</a></li>
+                                        <li><a className="col-md-2 dropdown-item" name="Dollars" onClick={(e) => setUnitWrapper(e)} href="#">Dollars</a></li>
                                     </ul>
                                 </div>
                                 </div>
