@@ -22,9 +22,10 @@ export default function EditHand() {
 
     // Set up all states
 
-    const [units, setUnits] = useState("BB");
+    // Backend stores results as dollars, so initialize button state as dollars
+    const [units, setUnits] = useState("Dollars");
 
-    // Wrap set units so that screen doesn't scroll
+    // Wrap setUnits so that screen doesn't scroll
     const setUnitWrapper = (e) => {
         e.preventDefault();
         setUnits(e.target.name);
@@ -257,8 +258,8 @@ export default function EditHand() {
                                     <div className="dropdown">
                                         <UnitButton />
                                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnitWrapper(e)} href="#">BB</a></li>
                                             <li><a className="col-md-2 dropdown-item" name="Dollars" onClick={(e) => setUnitWrapper(e)} href="#">Dollars</a></li>
+                                            <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnitWrapper(e)} href="#">BB</a></li>
                                         </ul>
                                     </div>
                                 </div>

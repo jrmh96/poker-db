@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import ModalFunctionalComponentExample from './ModalFunctionalComponentExample';
@@ -39,6 +39,15 @@ export default function Home() {
     const loadHands = async () => {
         const results = await axios.get("http://localhost:8080/gethands");
         setHands(results.data);
+    }
+
+    // Delete use function
+    const {id} = useParams();
+    const deleteHand = async(id) => {
+        // Warn user before deleting
+
+        const results = await axios.delete(`http://localhost:8080/hand/${id}`);
+        loadHands();
     }
 
     return (
@@ -87,7 +96,7 @@ export default function Home() {
                                         <button className="btn btn-primary mx-2">View</button>
                                         <Link className="btn btn-outline-primary mx-2" 
                                         to={`/editHand/${hand.id}`}>Edit</Link>
-                                        <button className="btn btn-danger mx-2">Delete</button>
+                                        <button className="btn btn-danger mx-2" onClick={() => {if (window.confirm('Are you sure you wish to delete this hand?')) deleteHand(hand.id)}}>Delete</button>
                                     </td>
                                 </tr>
                         ))}

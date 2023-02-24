@@ -75,7 +75,6 @@ export default function AddHand() {
     }
 
     const calculateResults = () => {
-        // MOVE THIS LOGIC TO RIGHT BEFORE AXIOS POST REQUEST - causes issues to have results value exactly mirror the dollar amount
         const stakesNumber = parseFloat(stakes);
         let resultNumber = parseFloat(result);
         if (isNaN(stakesNumber) || isNaN(resultNumber)) {
