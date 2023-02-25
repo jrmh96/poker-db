@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ErrorController {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleException(HttpMessageNotReadableException exception) {
-        return new ResponseEntity("You gave an incorrect value for ....", HttpStatus.BAD_REQUEST);
+        // exception.printStackTrace();
+        return new ResponseEntity("Java Error: " + exception.getRootCause(), HttpStatus.BAD_REQUEST);
     }
 }
