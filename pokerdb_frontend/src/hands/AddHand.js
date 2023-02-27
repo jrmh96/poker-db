@@ -18,7 +18,9 @@ export default function AddHand() {
     }
 
     // Set up all states
+
     // date is a string, we pass Date() objects into datepicker
+    // Get rid of this state - you can directly manage hand.date 
     const [date, setDate] = useState(formatDate(new Date()));
 
     const [hand, setHand] = useState({

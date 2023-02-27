@@ -4,8 +4,6 @@ import moment from 'moment';
 import { Link, useParams } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
-import ModalFunctionalComponentExample from './ModalFunctionalComponentExample';
-import ModalComp from './ModalComp';
 
 export default function Home() {
     // All hands from backend
@@ -108,7 +106,7 @@ export default function Home() {
                     show={showModal} 
                     onHide={toggleModal}
                     backdrop="static"
-                    keyboard={false}
+                    style={{"white-space": "pre-line"}}
                 >
                     <Modal.Header closeButton>
                         <Modal.Title>{selectedData.type}</Modal.Title>

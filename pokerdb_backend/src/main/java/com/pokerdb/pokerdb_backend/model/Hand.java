@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 import java.sql.Date; // Date without a time
-
+// Jeremy Hu 02/2023
 @Entity
 public class Hand {
 
