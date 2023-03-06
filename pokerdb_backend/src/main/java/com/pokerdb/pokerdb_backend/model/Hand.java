@@ -103,7 +103,6 @@ public class Hand {
 
     // You need to do some error handling here
     public void setDate(String input) {
-        System.out.println(input);
         this.date = Date.valueOf(input);
     }
 }

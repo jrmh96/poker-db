@@ -91,7 +91,6 @@ export default function Home() {
                                     <td style={{color: parseFloat(hand.result) < 0 ? "red" : "green"}}>{hand.result}$</td>
 
                                     <td>
-                                        <button className="btn btn-primary mx-2">View</button>
                                         <Link className="btn btn-outline-primary mx-2" 
                                         to={`/editHand/${hand.id}`}>Edit</Link>
                                         <button className="btn btn-danger mx-2" onClick={() => {if (window.confirm('Are you sure you wish to delete this hand?')) deleteHand(hand.id)}}>Delete</button>
