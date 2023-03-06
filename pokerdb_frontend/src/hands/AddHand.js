@@ -186,6 +186,9 @@ export default function AddHand() {
                                             <option value=".2">20NL Online</option>
                                             <option value=".25">25NL Online</option>
                                             <option value=".5">50NL Online</option>
+                                            <option value="1">100NL</option>
+                                            <option value="2">200NL</option>
+                                            <option value="5">500NL</option>
                                             <option value="2">1/2 Live</option>
                                             <option value="3">1/3 Live</option>
                                             <option value="5">2/5 Live</option>
