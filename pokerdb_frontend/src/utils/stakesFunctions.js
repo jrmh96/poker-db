@@ -5,6 +5,7 @@ export const bbToStrMap = {
     ".2": "20NL",
     ".25": "25NL",
     ".5": "50NL",
+    "1": "100NL",
     "2": "1/2 Live",
     "3": "1/3 Live",
     "5": "2/5 Live"
@@ -15,6 +16,7 @@ export const strToStakesMap = {
     "20NL":".2",
     "25NL":".25",
     "50NL":".5",
+    "100NL":"1",
     "1/2 Live":"2",
     "1/3 Live":"3",
     "2/5 Live":"5"

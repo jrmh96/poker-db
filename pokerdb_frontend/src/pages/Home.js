@@ -9,6 +9,11 @@ export default function Home() {
     // All hands from backend
     const [hands, setHands] = useState([]);
 
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(10);
+    const [sortBy, setSortBy] = useState('date');
+    const [totalPages, setTotalPages] = useState(0);
+
     // Modal status and data showing notes and history
     const [showModal, setShowModal] = useState(false);
     const [selectedData, setSelectedData] = useState({
@@ -31,19 +36,19 @@ export default function Home() {
 
     // Loads specified data on pageload
     useEffect(() => {
-        loadHands();
-    }, []);
+        loadHands(page, size, sortBy);
+    }, [page, size, sortBy]);
 
-    const loadHands = async () => {
-        const results = await axios.get("http://localhost:8080/gethands");
-        setHands(results.data);
+    async function loadHands(page, size, sortBy) {
+        const results = await axios.get(`http://localhost:8080/gethands?page=${page}&size=${size}&sortBy=${sortBy}`);
+        setHands(results.data.content);
+        setTotalPages(results.data.totalPages);
     }
-
-    // Delete use function
     const {id} = useParams();
+    
+    // Delete lambda function
     const deleteHand = async(id) => {
-        // Warn user before deleting
-
+        // Warning before deleting request is in the html
         const results = await axios.delete(`http://localhost:8080/hand/${id}`);
         loadHands();
     }
@@ -54,7 +59,7 @@ export default function Home() {
                 <table className="table border shadow">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
+                            <th scope="col">#</th>
                             <th scope="col">Date</th>
                             <th scope="col">Cards</th>
                             <th scope="col">Position</th>
@@ -71,7 +76,7 @@ export default function Home() {
                         {
                             hands.map((hand, index) => (
                                 <tr key={index}>
-                                    <th scope="row" key={index}>{index+1}</th>
+                                    <th scope="row" key={index}>{page*size + index + 1}</th>
                                     <td>{moment(hand.date).format("M/D/YYYY")}</td>
                                     <td>{hand.cards}</td>
                                     <td>{hand.position}</td>
@@ -99,6 +104,11 @@ export default function Home() {
                         ))}
                     </tbody>
                 </table>
+                <div>
+                    <Button onClick={() => setPage(page => page - 1)} disabled={hands.length === 0 || page === 0}>Previous Page</Button> {' '}
+                    
+                    <Button onClick={() => setPage(page => page + 1)} disabled={page == totalPages - 1}>Next Page</Button>
+                </div>
             </div>
             <div className="py-3">
                 <Modal 

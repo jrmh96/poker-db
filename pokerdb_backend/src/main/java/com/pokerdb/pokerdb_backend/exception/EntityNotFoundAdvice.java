@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class HandNotFoundAdvice {
+public class EntityNotFoundAdvice {
     @ResponseBody
-    @ExceptionHandler(HandNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> exceptionHandler(HandNotFoundException e) {
+    public Map<String, String> exceptionHandler(EntityNotFoundException e) {
         Map<String, String> errorMap = new HashMap<>();
 
         errorMap.put("errorMessage", e.getMessage());

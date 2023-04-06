@@ -1,20 +1,19 @@
 package com.pokerdb.pokerdb_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.sql.Date; // Date without a time
+import java.util.List;
+
 // Jeremy Hu 02/2023
 @Entity
+@Table(name = "hand")
 public class Hand {
-
     @Id
     @GeneratedValue
     private Long id;
     private String cards;
-
     private String position;
 
     private Float result;
@@ -28,6 +27,8 @@ public class Hand {
     private String stakes;
 
     private Date date;
+
+    // private List<Tag> tags;
 
     public String toString() {
         return " cards: " + cards + " position: " + position + "\n";
@@ -105,4 +106,15 @@ public class Hand {
     public void setDate(String input) {
         this.date = Date.valueOf(input);
     }
+
+    /*
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+    */
+
 }
