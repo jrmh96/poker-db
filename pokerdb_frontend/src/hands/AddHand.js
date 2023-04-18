@@ -236,7 +236,7 @@ export default function AddHand() {
                                         id="notes"
                                         name="notes"
                                         rows="6"
-                                        maxLength="400"
+                                        maxLength="600"
                                         value={notes}
                                         onChange={(e) => onInputChange(e)}
                                     />

@@ -3,7 +3,7 @@ import axios from "axios";
 import moment from 'moment';
 import { Link, useParams } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.css';
+import TagsPanel from '../layout/TagsPanel';
 
 export default function Home() {
     // All hands from backend
@@ -54,8 +54,8 @@ export default function Home() {
     }
 
     return (
-        <div className='container'>
-            <div className='py-4'>
+        <div className='container'> 
+            <div className='py-4 col-10 mx-auto'>
                 <table className="table border shadow">
                     <thead>
                         <tr>
@@ -107,7 +107,7 @@ export default function Home() {
                 <div>
                     <Button onClick={() => setPage(page => page - 1)} disabled={hands.length === 0 || page === 0}>Previous Page</Button> {' '}
                     
-                    <Button onClick={() => setPage(page => page + 1)} disabled={page == totalPages - 1}>Next Page</Button>
+                    <Button onClick={() => setPage(page => page + 1)} disabled={page === totalPages - 1}>Next Page</Button>
                 </div>
             </div>
             <div className="py-3">

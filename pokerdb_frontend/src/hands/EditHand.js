@@ -10,17 +10,24 @@ export default function EditHand() {
 
     const {id} = useParams(); // User url input parameter
 
-    // Format date util function
+    // Util function
     const formatDate = (date) => {
         // input: javascript Date object
-        // output: "YYYY-mm-dd" string rep. of date
+        // output: "YYYY-mm-dd" string rep. of date for use in backend
         const month = date.getMonth() + 1;
         const sDate = date.getFullYear().toString() + "-" + month.toString() + "-" + date.getDate().toString();
         return sDate;
     }
 
-    // Set up all states
+    // Date from string, note that
+    // new Date(dateString) won't work unless
+    // dateString is in format YYYY-MM-DDTHH:mm:ss.sssZ (from docs)
+    const dateFromString = (dateString) => {
+        const [year, month, day] = dateString.split("-").map(part => parseInt(part));
+        return new Date(year, month, day);
+    }
 
+    // Set up all states
     // Backend stores results as dollars, so initialize button state as dollars
     const [units, setUnits] = useState("Dollars");
 
@@ -134,7 +141,7 @@ export default function EditHand() {
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <DatePicker
-                                            selected={new Date(date)}
+                                            selected={dateFromString(date)}
                                             id="datePicker"
                                             name="date"
                                             onChange={(e) => onInputChange(e)}
@@ -233,7 +240,7 @@ export default function EditHand() {
                                         id="notes"
                                         name="notes"
                                         rows="6"
-                                        maxLength="400"
+                                        maxLength="600"
                                         value={notes}
                                         onChange={(e) => onInputChange(e)}
                                     />
