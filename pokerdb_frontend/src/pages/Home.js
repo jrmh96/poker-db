@@ -3,7 +3,6 @@ import axios from "axios";
 import moment from 'moment';
 import { Link, useParams } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
-import TagsPanel from '../layout/TagsPanel';
 
 export default function Home() {
     // All hands from backend
@@ -49,8 +48,9 @@ export default function Home() {
     // Delete lambda function
     const deleteHand = async(id) => {
         // Warning before deleting request is in the html
+        // Should probably add error checking here based on results code
         const results = await axios.delete(`http://localhost:8080/hand/${id}`);
-        loadHands();
+        loadHands(page, size, sortBy);
     }
 
     return (
@@ -66,7 +66,6 @@ export default function Home() {
                             <th scope="col">Stakes</th>
                             <th scope="col">Hand History</th>
                             <th scope="col">Playback Link</th>
-                            <th scope="col">Notes</th>
                             <th scope="col">Result</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -87,11 +86,6 @@ export default function Home() {
                                         </button>
                                     </td>
                                     <td><a href={hand.link} rel="noreferrer" target="_blank">Link</a></td>
-                                    <td>
-                                        <button className="btn btn-outline-dark" onClick={() => handleRowClick("Notes", hand.notes)}>
-                                            Notes
-                                        </button>
-                                    </td>
                                     
                                     <td style={{color: parseFloat(hand.result) < 0 ? "red" : "green"}}>{hand.result}$</td>
 
