@@ -9,12 +9,12 @@ import HandField from './HandField.tsx';
 import '../css/handInput.css';
 import { useReducer } from 'react';
 
-import { handReducer, formatDate, blankHand, updateHandOnChange } from '../states/HandContext';
+import { handReducer, formatDate, defaultHand, updateHandOnChange } from '../states/HandContext';
 
 export default function AddHand() {
 
     // Hand states and managers defined in HandContext.js
-    const [hand, dispatch] = useReducer(handReducer, blankHand);
+    const [hand, dispatch] = useReducer(handReducer, defaultHand);
 
     const [units, setUnits] = useState("BB");
 

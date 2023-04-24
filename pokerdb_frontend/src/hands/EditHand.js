@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../buttondropdown.css';
 import { bbToStrMap, strToStakesMap } from '../utils/stakesFunctions.js';
 import { useReducer } from 'react';
-import { handReducer, formatDate, blankHand, updateHandOnChange } from '../states/HandContext';
+import { handReducer, formatDate, emptyHand, updateHandOnChange } from '../states/HandContext';
 
 export default function EditHand() {
 
@@ -21,7 +21,8 @@ export default function EditHand() {
     }
 
     // Hand states and managers defined in HandContext.js
-    const [hand, dispatch] = useReducer(handReducer, blankHand);
+    const [hand, dispatch] = useReducer(handReducer, emptyHand);
+    const [loaded, setLoaded] = useState(false); // Whether hand has been loaded or not
 
     // Set up all states
     // Backend stores results as dollars, so initialize button state as dollars
@@ -42,14 +43,17 @@ export default function EditHand() {
         const startingHand = await axios.get(`http://localhost:8080/hand/${id}`);
         startingHand.data.stakeDecimal = strToStakesMap[startingHand.data.stakes];
         startingHand.data.stakeString = startingHand.data.stakes;
+
         dispatch({
             type: "update",
             field: startingHand.data
         });
     }
 
-    useEffect(()=>{
-        loadHand();
+    useEffect(() => {
+        loadHand().then(() => {
+            setLoaded(true);
+        });
     }, []);
 
     const calculateResults = () => {
@@ -105,7 +109,7 @@ export default function EditHand() {
         )
     }
 
-    return (
+    return !loaded ? null : (
         <div className="container">
             <div className="row">
                 <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
@@ -157,21 +161,21 @@ export default function EditHand() {
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <select className="form-select"
-                                            defaultValue=".5"
+                                            defaultValue={hand.stakeString}
                                             aria-label="Select Stakes"
                                             id="stakes"
                                             name="stakes"
                                             onChange={(e) => onInputChange(e)}>
-                                            <option id="10NL" value=".1">10NL Online</option>
-                                            <option id="20NL" value=".2">20NL Online</option>
-                                            <option id="25NL" value=".25">25NL Online</option>
-                                            <option id="50NL" value=".5">50NL Online</option>
-                                            <option id="100NL" value="1">100NL Online</option>
-                                            <option id="200NL" value="2">200NL Online</option>
-                                            <option id="500NL" value="5">500NL Online</option>
-                                            <option id="1/2 Live" value="2">1/2 Live</option>
-                                            <option id="1/3 Live" value="3">1/3 Live</option>
-                                            <option id="2/5 Live" value="5">2/5 Live</option>
+                                            <option value="10NL" id=".1">10NL Online</option>
+                                            <option value="20NL" id=".2">20NL Online</option>
+                                            <option value="25NL" id=".25">25NL Online</option>
+                                            <option value="50NL" id=".5">50NL Online</option>
+                                            <option value="100NL" id="1">100NL Online</option>
+                                            <option value="200NL" id="2">200NL Online</option>
+                                            <option value="500NL" id="5">500NL Online</option>
+                                            <option value="1/2 Live" id="2">1/2 Live</option>
+                                            <option value="1/3 Live" id="3">1/3 Live</option>
+                                            <option value="2/5 Live" id="5">2/5 Live</option> 
                                         </select>
                                         <label className="form-label" htmlFor="stakes">BB ($)</label>
                                     </div>
