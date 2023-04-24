@@ -64,7 +64,7 @@ export default function Home() {
                             <th scope="col">Cards</th>
                             <th scope="col">Position</th>
                             <th scope="col">Stakes</th>
-                            <th scope="col">Hand History</th>
+                            <th scope="col">Notes</th>
                             <th scope="col">Playback Link</th>
                             <th scope="col">Result</th>
                             <th scope="col">Action</th>
@@ -81,8 +81,8 @@ export default function Home() {
                                     <td>{hand.position}</td>
                                     <td>{hand.stakes}</td>
                                     <td>
-                                        <button className="btn btn-outline-dark" onClick={() => handleRowClick("History", hand.history)}>
-                                            History
+                                        <button className="btn btn-outline-dark" onClick={() => handleRowClick("Notes", hand.notes)}>
+                                            Notes
                                         </button>
                                     </td>
                                     <td><a href={hand.link} rel="noreferrer" target="_blank">Link</a></td>
@@ -109,7 +109,7 @@ export default function Home() {
                     show={showModal} 
                     onHide={toggleModal}
                     backdrop="static"
-                    style={{"white-space": "pre-line"}}
+                    style={{"whiteSpace": "pre-line"}}
                 >
                     <Modal.Header closeButton>
                         <Modal.Title>{selectedData.type}</Modal.Title>

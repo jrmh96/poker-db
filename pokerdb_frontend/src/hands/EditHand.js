@@ -70,7 +70,10 @@ export default function EditHand() {
     }
 
     const cancel = (e) => {
-        redirect("/");
+        dispatch({
+            type: 'clear'
+        });
+        navigate("/");
     }
 
     // Submit to axios

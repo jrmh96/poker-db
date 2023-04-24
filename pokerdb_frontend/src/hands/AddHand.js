@@ -9,7 +9,7 @@ import HandField from './HandField.tsx';
 import '../css/handInput.css';
 import { useReducer } from 'react';
 
-import { handReducer, formatDate, defaultHand, updateHandOnChange } from '../states/HandContext';
+import { handReducer, defaultHand, updateHandOnChange } from '../states/HandContext';
 
 export default function AddHand() {
 
@@ -32,11 +32,7 @@ export default function AddHand() {
     }
 
     const cancel = (e) => {
-        setUnits("BB");
-        dispatch({
-            type: 'clear'
-        });
-        redirect("/");
+        navigate("/");
     }
 
     const calculateResults = () => {
