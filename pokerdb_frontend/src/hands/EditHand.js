@@ -91,7 +91,7 @@ export default function EditHand() {
             }
         }).catch(function (error) {
             if (error.response) {
-                console.log("The message sent: ")
+                console.log("Error message sent from onSubmit: ")
                 console.log(JSON.parse(error.config.data));
             }
         });
@@ -150,14 +150,23 @@ export default function EditHand() {
                                 </div>
                                 <div className="col-md-4">
                                     <div className="form-outline">
-                                        <input
-                                            type="text"
+                                        <select className="form-select"
+                                            defaultValue={hand.position}
+                                            aria-label="Select Position"
                                             id="position"
                                             name="position"
-                                            value={hand.position}
-                                            className="form-control"
-                                            onChange={(e) => onInputChange(e)}
-                                        />
+                                            onChange={(e) => onInputChange(e)}>
+                                            <option name="SB" value="SB">SB</option>
+                                            <option name="BB" value="BB">BB</option>
+                                            <option name="UTG" value="UTG">UTG</option>
+                                            <option name="UTG+1" value="UTG+1">UTG+1</option>
+                                            <option name="MP" value="MP">MP</option>
+                                            <option name="LJ" value="LJ">LJ</option>
+                                            <option name="HJ" value="HJ">HJ</option>
+                                            <option name="CO" value="CO">CO</option>
+                                            <option name="BTN" value="BTN">BTN</option>
+                                        </select>
+
                                         <label className="form-label" htmlFor="position">Position</label>
                                     </div>
                                 </div>

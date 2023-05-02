@@ -3,9 +3,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 
-
-
-
 const CodeInput: React.FC = () => {
     const [code, setCode] = useState("");
     const inputRefs = useRef<HTMLInputElement[]>([]);
@@ -54,6 +51,4 @@ const CodeInput: React.FC = () => {
         </div>
     );
 };
-
-export default CodeInput;
 

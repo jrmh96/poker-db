@@ -10,7 +10,7 @@ export default function Home() {
 
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
-    const [sortBy, setSortBy] = useState('date');
+    const [sortBy, setSortBy] = useState('id');
     const [totalPages, setTotalPages] = useState(0);
 
     // Modal status and data showing notes and history
@@ -60,6 +60,7 @@ export default function Home() {
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">Tags</th>
                             <th scope="col">Date</th>
                             <th scope="col">Cards</th>
                             <th scope="col">Position</th>
@@ -76,6 +77,7 @@ export default function Home() {
                             hands.map((hand, index) => (
                                 <tr key={index}>
                                     <th scope="row" key={index}>{page*size + index + 1}</th>
+                                    <td>[Tags]<br/> [More Tags]</td>
                                     <td>{moment(hand.date).format("M/D/YYYY")}</td>
                                     <td>{hand.cards}</td>
                                     <td>{hand.position}</td>

@@ -53,14 +53,14 @@ export default function AddHand() {
         e.preventDefault();
         let objToPost = hand;
         objToPost.result = calculateResults();
-        objToPost.stakes = bbToStrMap[hand.stakes];
+        objToPost.stakes = hand.stakeString;
         await axios.post("http://localhost:8080/addhand", objToPost, {
             headers: {
                 'Content-Type': 'application/json'
             }
         }).catch(function (error) {
             if (error.response) {
-                console.log("The message sent: ")
+                console.log("Error message sent from onSubmit: ")
                 console.log(JSON.parse(error.config.data));
             }
         });
@@ -142,22 +142,22 @@ export default function AddHand() {
                                 </div>
                                 <div className="col-md-4">
                                     <div className="form-outline">
-                                        <select className="form-select" 
-                                            defaultValue={stakeDecimal}
-                                            aria-label="Select Stakes" 
+                                        <select className="form-select"
+                                            defaultValue={stakeString}
+                                            aria-label="Select Stakes"
                                             id="stakes"
                                             name="stakes"
                                             onChange={(e) => onInputChange(e)}>
-                                            <option id="10NL" value=".1">10NL Online</option>
-                                            <option id="20NL" value=".2">20NL Online</option>
-                                            <option id="25NL" value=".25">25NL Online</option>
-                                            <option id="50NL" value=".5">50NL Online</option>
-                                            <option id="100NL" value="1">100NL Online</option>
-                                            <option id="200NL" value="2">200NL Online</option>
-                                            <option id="500NL" value="5">500NL Online</option>
-                                            <option id="1/2 Live" value="2">1/2 Live</option>
-                                            <option id="1/3 Live" value="3">1/3 Live</option>
-                                            <option id="2/5 Live" value="5">2/5 Live</option>
+                                            <option value="10NL" id=".1">10NL Online</option>
+                                            <option value="20NL" id=".2">20NL Online</option>
+                                            <option value="25NL" id=".25">25NL Online</option>
+                                            <option value="50NL" id=".5">50NL Online</option>
+                                            <option value="100NL" id="1">100NL Online</option>
+                                            <option value="200NL" id="2">200NL Online</option>
+                                            <option value="500NL" id="5">500NL Online</option>
+                                            <option value="1/2 Live" id="2">1/2 Live</option>
+                                            <option value="1/3 Live" id="3">1/3 Live</option>
+                                            <option value="2/5 Live" id="5">2/5 Live</option>
                                         </select>
                                         <label className="form-label" htmlFor="stakes">BB ($)</label>
                                     </div>

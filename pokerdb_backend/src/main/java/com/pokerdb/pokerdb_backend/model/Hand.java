@@ -11,7 +11,8 @@ import java.util.List;
 @Table(name = "hand")
 public class Hand {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
     private String cards;
     private String position;
