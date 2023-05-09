@@ -3,7 +3,7 @@ import axios from "axios";
 import moment from 'moment';
 import { Link, useParams } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.css';
+
 
 export default function Home() {
     // All hands from backend
@@ -11,7 +11,7 @@ export default function Home() {
 
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
-    const [sortBy, setSortBy] = useState('date');
+    const [sortBy, setSortBy] = useState('id');
     const [totalPages, setTotalPages] = useState(0);
 
     // Modal status and data showing notes and history
@@ -49,24 +49,25 @@ export default function Home() {
     // Delete lambda function
     const deleteHand = async(id) => {
         // Warning before deleting request is in the html
+        // Should probably add error checking here based on results code
         const results = await axios.delete(`http://localhost:8080/hand/${id}`);
-        loadHands();
+        loadHands(page, size, sortBy);
     }
 
     return (
-        <div className='container'>
-            <div className='py-4'>
+        <div className='container'> 
+            <div className='py-4 col-10 mx-auto'>
                 <table className="table border shadow">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">Tags</th>
                             <th scope="col">Date</th>
                             <th scope="col">Cards</th>
                             <th scope="col">Position</th>
                             <th scope="col">Stakes</th>
-                            <th scope="col">Hand History</th>
-                            <th scope="col">Playback Link</th>
                             <th scope="col">Notes</th>
+                            <th scope="col">Playback Link</th>
                             <th scope="col">Result</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -77,21 +78,17 @@ export default function Home() {
                             hands.map((hand, index) => (
                                 <tr key={index}>
                                     <th scope="row" key={index}>{page*size + index + 1}</th>
+                                    <td>[Tags]<br/> [More Tags]</td>
                                     <td>{moment(hand.date).format("M/D/YYYY")}</td>
                                     <td>{hand.cards}</td>
                                     <td>{hand.position}</td>
                                     <td>{hand.stakes}</td>
                                     <td>
-                                        <button className="btn btn-outline-dark" onClick={() => handleRowClick("History", hand.history)}>
-                                            History
-                                        </button>
-                                    </td>
-                                    <td><a href={hand.link} rel="noreferrer" target="_blank">Link</a></td>
-                                    <td>
                                         <button className="btn btn-outline-dark" onClick={() => handleRowClick("Notes", hand.notes)}>
                                             Notes
                                         </button>
                                     </td>
+                                    <td><a href={hand.link} rel="noreferrer" target="_blank">Link</a></td>
                                     
                                     <td style={{color: parseFloat(hand.result) < 0 ? "red" : "green"}}>{hand.result}$</td>
 
@@ -107,7 +104,7 @@ export default function Home() {
                 <div>
                     <Button onClick={() => setPage(page => page - 1)} disabled={hands.length === 0 || page === 0}>Previous Page</Button> {' '}
                     
-                    <Button onClick={() => setPage(page => page + 1)} disabled={page == totalPages - 1}>Next Page</Button>
+                    <Button onClick={() => setPage(page => page + 1)} disabled={page === totalPages - 1}>Next Page</Button>
                 </div>
             </div>
             <div className="py-3">
@@ -115,7 +112,7 @@ export default function Home() {
                     show={showModal} 
                     onHide={toggleModal}
                     backdrop="static"
-                    style={{"white-space": "pre-line"}}
+                    style={{"whiteSpace": "pre-line"}}
                 >
                     <Modal.Header closeButton>
                         <Modal.Title>{selectedData.type}</Modal.Title>

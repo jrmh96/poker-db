@@ -1,26 +1,31 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, redirect } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
-import '../buttondropdown.css';
-import { bbToStrMap, strToStakesMap } from '../utils/stakesFunctions.js';
+import '../add-edit-special.scss';
+import { strToStakesMap } from '../utils/stakesFunctions.js';
+import { useReducer } from 'react';
+import { handReducer, formatDate, emptyHand, updateHandOnChange } from '../states/HandContext';
+import PinInput from 'react-pin-input';
 
 export default function EditHand() {
 
     const {id} = useParams(); // User url input parameter
 
-    // Format date util function
-    const formatDate = (date) => {
-        // input: javascript Date object
-        // output: "YYYY-mm-dd" string rep. of date
-        const month = date.getMonth() + 1;
-        const sDate = date.getFullYear().toString() + "-" + month.toString() + "-" + date.getDate().toString();
-        return sDate;
+    // Date from string, note that
+    // new Date(dateString) won't work unless
+    // dateString is in format YYYY-MM-DDTHH:mm:ss.sssZ (from docs)
+    const dateFromString = (dateString) => {
+        const [year, month, day] = dateString.split("-").map(part => parseInt(part));
+        return new Date(year, month-1, day);
     }
 
-    // Set up all states
+    // Hand states and managers defined in HandContext.js
+    const [hand, dispatch] = useReducer(handReducer, emptyHand);
+    const [loaded, setLoaded] = useState(false); // Whether hand has been loaded or not
 
+    // Set up all states
     // Backend stores results as dollars, so initialize button state as dollars
     const [units, setUnits] = useState("Dollars");
 
@@ -30,60 +35,46 @@ export default function EditHand() {
         setUnits(e.target.name);
     }
 
-    // stakes in the context of this page will be values like ".1", ".5"
-    // The string we submit to backend will be "10NL" "50NL" and the like
-    const [hand, setHand] = useState({
-        date: formatDate(new Date()),
-        cards: "",
-        position: "",
-        stakes: "",
-        history: "",
-        link: "",
-        notes: "",
-        result: ""
-    });
-
-    // Set up references to default state values
-    const { date, cards, position, stakes, h, link, notes, result } = hand;
+    const onInputChange = (e) => {
+        updateHandOnChange(e, dispatch);
+    }
 
     // Pull hand information from backend
     const loadHand = async () => {
         const startingHand = await axios.get(`http://localhost:8080/hand/${id}`);
-        console.log(strToStakesMap);
-        startingHand.data.stakes = strToStakesMap[startingHand.data.stakes];
-        console.log(startingHand);
-        setHand(startingHand.data);
+        startingHand.data.stakeDecimal = strToStakesMap[startingHand.data.stakes];
+        startingHand.data.stakeString = startingHand.data.stakes;
+
+        dispatch({
+            type: "update",
+            field: startingHand.data
+        });
     }
 
-    useEffect(()=>{
-        loadHand();
+    useEffect(() => {
+        loadHand().then(() => {
+            setLoaded(true);
+        });
     }, []);
 
-    const onInputChange = (e) => {
-        const passedEvent = { name: "", value: "" }
-        // Change react datepicker Date type to string
-        if (e instanceof Date) {
-            passedEvent["name"] = "date";
-            passedEvent["value"] = formatDate(e);
-        } else {
-            passedEvent["name"] = e.target.name;
-            passedEvent["value"] = e.target.value;
-        }
-
-        setHand({ ...hand, [passedEvent["name"]]: passedEvent["value"] });
-    }
-
     const calculateResults = () => {
-        const stakesNumber = parseFloat(stakes);
-        let resultNumber = parseFloat(result);
+        const stakesNumber = parseFloat(hand.stakeDecimal);
+        const resultNumber = parseFloat(hand.result);
         if (isNaN(stakesNumber) || isNaN(resultNumber)) {
-            throw new TypeError("BB or result value is not valid");
+            throw new TypeError("BB or result value is not valid: " + resultNumber + " " + stakesNumber);
         }
         if (units === "BB") {
             resultNumber *= stakesNumber;
         }
 
         return resultNumber.toString();
+    }
+
+    const cancel = (e) => {
+        dispatch({
+            type: 'clear'
+        });
+        navigate("/");
     }
 
     // Submit to axios
@@ -94,14 +85,14 @@ export default function EditHand() {
 
         // Calculate results in dollars and change stakes to string (e.g. 50NL)
         objToPut.result = calculateResults();
-        objToPut.stakes = bbToStrMap[hand.stakes];
+        objToPut.stakes = hand.stakeString;
         await axios.put(`http://localhost:8080/hand/${id}`, objToPut, {
             headers: {
                 'Content-Type': 'application/json'
             }
         }).catch(function (error) {
             if (error.response) {
-                console.log("The message sent: ")
+                console.log("Error message sent from onSubmit: ")
                 console.log(JSON.parse(error.config.data));
             }
         });
@@ -122,7 +113,7 @@ export default function EditHand() {
         )
     }
 
-    return (
+    return !loaded ? null : (
         <div className="container">
             <div className="row">
                 <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
@@ -134,7 +125,7 @@ export default function EditHand() {
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <DatePicker
-                                            selected={new Date(date)}
+                                            selected={dateFromString(hand.date)}
                                             id="datePicker"
                                             name="date"
                                             onChange={(e) => onInputChange(e)}
@@ -147,48 +138,62 @@ export default function EditHand() {
                             <div className="row my-3">
                                 <div className="col-md-4">
                                     <div className="form-outline">
-                                        <input
-                                            type="text"
-                                            id="cards"
-                                            name="cards"
-                                            value={cards}
-                                            className="form-control"
-                                            onChange={(e) => onInputChange(e)}
+                                        <PinInput
+                                            length={4}
+                                            initialValue={hand.cards}
+                                            type="custom"
+                                            onChange={
+                                                (val, _) => {
+                                                    const evt = { target: {} };
+                                                    evt.target = { name: 'cards', value: val };
+                                                    onInputChange(evt);
+                                                }
+                                            }
+                                            autoSelect={true}
                                         />
-                                        <label className="form-label" htmlFor="cards">Cards</label>
+                                        <label className="form-label" htmlFor="cards">Cards (e.g. Ad5d)</label>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <div className="form-outline">
-                                        <input
-                                            type="text"
+                                        <select className="form-select"
+                                            defaultValue={hand.position}
+                                            aria-label="Select Position"
                                             id="position"
                                             name="position"
-                                            value={position}
-                                            className="form-control"
-                                            onChange={(e) => onInputChange(e)}
-                                        />
+                                            onChange={(e) => onInputChange(e)}>
+                                            <option name="SB" value="SB">SB</option>
+                                            <option name="BB" value="BB">BB</option>
+                                            <option name="UTG" value="UTG">UTG</option>
+                                            <option name="UTG+1" value="UTG+1">UTG+1</option>
+                                            <option name="MP" value="MP">MP</option>
+                                            <option name="LJ" value="LJ">LJ</option>
+                                            <option name="HJ" value="HJ">HJ</option>
+                                            <option name="CO" value="CO">CO</option>
+                                            <option name="BTN" value="BTN">BTN</option>
+                                        </select>
+
                                         <label className="form-label" htmlFor="position">Position</label>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <select className="form-select"
-                                            value={stakes}
+                                            defaultValue={hand.stakeString}
                                             aria-label="Select Stakes"
                                             id="stakes"
                                             name="stakes"
                                             onChange={(e) => onInputChange(e)}>
-                                            <option value=".1">10NL Online</option>
-                                            <option value=".2">20NL Online</option>
-                                            <option value=".25">25NL Online</option>
-                                            <option value=".5">50NL Online</option>
-                                            <option value="1">100NL Online</option>
-                                            <option value="2">200NL Online</option>
-                                            <option value="5">500NL Online</option>
-                                            <option value="2">1/2 Live</option>
-                                            <option value="3">1/3 Live</option>
-                                            <option value="5">2/5 Live</option>
+                                            <option value="10NL" id=".1">10NL Online</option>
+                                            <option value="20NL" id=".2">20NL Online</option>
+                                            <option value="25NL" id=".25">25NL Online</option>
+                                            <option value="50NL" id=".5">50NL Online</option>
+                                            <option value="100NL" id="1">100NL Online</option>
+                                            <option value="200NL" id="2">200NL Online</option>
+                                            <option value="500NL" id="5">500NL Online</option>
+                                            <option value="1/2 Live" id="2">1/2 Live</option>
+                                            <option value="1/3 Live" id="3">1/3 Live</option>
+                                            <option value="2/5 Live" id="5">2/5 Live</option> 
                                         </select>
                                         <label className="form-label" htmlFor="stakes">BB ($)</label>
                                     </div>
@@ -202,7 +207,7 @@ export default function EditHand() {
                                         id="history"
                                         name="history"
                                         rows="6"
-                                        value={h}
+                                        value={hand.history}
                                         maxLength="400"
                                         onChange={(e) => onInputChange(e)}
                                     />
@@ -218,7 +223,7 @@ export default function EditHand() {
                                             id="link"
                                             className="form-control"
                                             name="link"
-                                            value={link}
+                                            value={hand.link}
                                             onChange={(e) => onInputChange(e)}
                                         />
                                         <label className="form-label" htmlFor="link">Playback Link</label>
@@ -233,8 +238,8 @@ export default function EditHand() {
                                         id="notes"
                                         name="notes"
                                         rows="6"
-                                        maxLength="400"
-                                        value={notes}
+                                        maxLength="600"
+                                        value={hand.notes}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     <p>Notes</p>
@@ -250,7 +255,7 @@ export default function EditHand() {
                                             id="result"
                                             className="form-control"
                                             name="result"
-                                            value={result}
+                                            value={hand.result}
                                             onChange={(e) => onInputChange(e)}
                                         />
                                         <label className="form-label" htmlFor="result">Result</label>
@@ -267,7 +272,7 @@ export default function EditHand() {
                                 </div>
                             </div>
                             <button type="submit" className="btn btn-outline-primary">Submit</button>
-                            <button type="submit" className="btn btn-outline-danger mx-4">Cancel</button>
+                            <button type="button" onClick={(e) => cancel(e)} className="btn btn-outline-danger mx-4">Cancel</button>
                         </div>
                     </form>
                 </div>
