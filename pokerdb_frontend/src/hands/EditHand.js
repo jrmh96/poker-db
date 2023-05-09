@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, redirect } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
-import '../buttondropdown.css';
+import '../add-edit-special.scss';
 import { strToStakesMap } from '../utils/stakesFunctions.js';
 import { useReducer } from 'react';
 import { handReducer, formatDate, emptyHand, updateHandOnChange } from '../states/HandContext';
+import PinInput from 'react-pin-input';
 
 export default function EditHand() {
 
@@ -137,15 +138,20 @@ export default function EditHand() {
                             <div className="row my-3">
                                 <div className="col-md-4">
                                     <div className="form-outline">
-                                        <input
-                                            type="text"
-                                            id="cards"
-                                            name="cards"
-                                            value={hand.cards}
-                                            className="form-control"
-                                            onChange={(e) => onInputChange(e)}
+                                        <PinInput
+                                            length={4}
+                                            initialValue={hand.cards}
+                                            type="custom"
+                                            onChange={
+                                                (val, _) => {
+                                                    const evt = { target: {} };
+                                                    evt.target = { name: 'cards', value: val };
+                                                    onInputChange(evt);
+                                                }
+                                            }
+                                            autoSelect={true}
                                         />
-                                        <label className="form-label" htmlFor="cards">Cards</label>
+                                        <label className="form-label" htmlFor="cards">Cards (e.g. Ad5d)</label>
                                     </div>
                                 </div>
                                 <div className="col-md-4">

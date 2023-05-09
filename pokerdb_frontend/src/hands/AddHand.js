@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { redirect, useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
-import '../buttondropdown.css';
+import '../add-edit-special.scss';
 import { bbToStrMap } from '../utils/stakesFunctions.js';
 import { useReducer } from 'react';
 
@@ -105,13 +105,18 @@ export default function AddHand() {
                             <div className="row my-3">
                                 <div className="col-md-4">
                                     <div className="form-outline">
-                                        <input 
-                                            type="text" 
-                                            id="cards"
-                                            name="cards"
-                                            value={cards}
-                                            className="form-control"
-                                            onChange={(e) => onInputChange(e)}
+                                        <PinInput
+                                            length={4}
+                                            initialValue={ cards }
+                                            type="custom"
+                                            onChange = {
+                                                (val, _) => {
+                                                    const evt = { target: {} };
+                                                    evt.target = { name: 'cards', value: val };
+                                                    onInputChange(evt);
+                                                }
+                                            }
+                                            autoSelect={true}
                                         />
                                         <label className="form-label" htmlFor="cards">Cards (e.g. Ad5d)</label>
                                     </div>
