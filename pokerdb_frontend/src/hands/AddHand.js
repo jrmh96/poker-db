@@ -5,11 +5,10 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import '../buttondropdown.css';
 import { bbToStrMap } from '../utils/stakesFunctions.js';
-import HandField from './HandField.tsx';
-import '../css/handInput.css';
 import { useReducer } from 'react';
 
 import { handReducer, defaultHand, updateHandOnChange } from '../states/HandContext';
+import PinInput from 'react-pin-input';
 
 export default function AddHand() {
 
@@ -114,7 +113,7 @@ export default function AddHand() {
                                             className="form-control"
                                             onChange={(e) => onInputChange(e)}
                                         />
-                                        <label className="form-label" htmlFor="cards">Cards</label>
+                                        <label className="form-label" htmlFor="cards">Cards (e.g. Ad5d)</label>
                                     </div>
                                 </div>
 

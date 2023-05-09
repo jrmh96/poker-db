@@ -4,7 +4,7 @@ import { useNavigate, useParams, redirect } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import '../buttondropdown.css';
-import { bbToStrMap, strToStakesMap } from '../utils/stakesFunctions.js';
+import { strToStakesMap } from '../utils/stakesFunctions.js';
 import { useReducer } from 'react';
 import { handReducer, formatDate, emptyHand, updateHandOnChange } from '../states/HandContext';
 
@@ -58,9 +58,9 @@ export default function EditHand() {
 
     const calculateResults = () => {
         const stakesNumber = parseFloat(hand.stakeDecimal);
-        let resultNumber = parseFloat(hand.result);
+        const resultNumber = parseFloat(hand.result);
         if (isNaN(stakesNumber) || isNaN(resultNumber)) {
-            throw new TypeError("BB or result value is not valid: " + hand.result + " " + hand.stakeDecimal);
+            throw new TypeError("BB or result value is not valid: " + resultNumber + " " + stakesNumber);
         }
         if (units === "BB") {
             resultNumber *= stakesNumber;

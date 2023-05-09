@@ -20,6 +20,7 @@ export const strToStakesMap = {
     "25NL":".25",
     "50NL":".5",
     "100NL":"1",
+    "200NL": "2",
     "500NL": "5",
     "1/2 Live":"2",
     "1/3 Live":"3",
