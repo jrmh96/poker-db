@@ -108,9 +108,14 @@ export default function AddHand() {
                                             length={4}
                                             initialValue={cards}
                                             type="custom"
-                                            onChange = {
+                                            onChange={
                                                 (val, _) => {
                                                     const evt = { target: {} };
+
+                                                    const alternativeCase = string => string.split('')
+                                                        .map((c, i) => i % 2 === 0 ? c.toUpperCase() : c.toLowerCase()).join('');
+                                                    val = alternativeCase(val);
+
                                                     evt.target = { name: 'cards', value: val };
                                                     onInputChange(evt);
                                                 }
