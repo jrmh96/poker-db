@@ -1,10 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import '../add-edit-special.scss';
-import { bbToStrMap } from '../utils/stakesFunctions.js';
 import { useReducer } from 'react';
 
 import { handReducer, defaultHand, updateHandOnChange } from '../states/HandContext';
@@ -233,8 +232,8 @@ export default function AddHand() {
                                     <div className="dropdown">
                                         <UnitButton />
                                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnitWrapper(e)} href="#">BB</a></li>
-                                            <li><a className="col-md-2 dropdown-item" name="Dollars" onClick={(e) => setUnitWrapper(e)} href="#">Dollars</a></li>
+                                            <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnitWrapper(e)} href="#/">BB</a></li>
+                                            <li><a className="col-md-2 dropdown-item" name="Dollars" onClick={(e) => setUnitWrapper(e)} href="#/">Dollars</a></li>
                                         </ul>
                                     </div>
                                 </div>
