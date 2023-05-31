@@ -107,7 +107,7 @@ export default function AddHand() {
                                     <div className="form-outline">
                                         <PinInput
                                             length={4}
-                                            initialValue={ cards }
+                                            initialValue={cards}
                                             type="custom"
                                             onChange = {
                                                 (val, _) => {
