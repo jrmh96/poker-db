@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, redirect } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import '../add-edit-special.scss';
 import { strToStakesMap } from '../utils/stakesFunctions.js';
 import { useReducer } from 'react';
-import { handReducer, formatDate, emptyHand, updateHandOnChange } from '../states/HandContext';
+import { handReducer, emptyHand, updateHandOnChange } from '../states/HandContext';
 import PinInput from 'react-pin-input';
 
 export default function EditHand() {
@@ -55,11 +55,11 @@ export default function EditHand() {
         loadHand().then(() => {
             setLoaded(true);
         });
-    }, []);
+    });
 
     const calculateResults = () => {
         const stakesNumber = parseFloat(hand.stakeDecimal);
-        const resultNumber = parseFloat(hand.result);
+        let resultNumber = parseFloat(hand.result);
         if (isNaN(stakesNumber) || isNaN(resultNumber)) {
             throw new TypeError("BB or result value is not valid: " + resultNumber + " " + stakesNumber);
         }
@@ -145,6 +145,11 @@ export default function EditHand() {
                                             onChange={
                                                 (val, _) => {
                                                     const evt = { target: {} };
+
+                                                    const alternativeCase = string => string.split('')
+                                                        .map((c, i) => i % 2 === 0 ? c.toUpperCase() : c.toLowerCase()).join('');
+                                                    val = alternativeCase(val);
+
                                                     evt.target = { name: 'cards', value: val };
                                                     onInputChange(evt);
                                                 }
@@ -265,8 +270,8 @@ export default function EditHand() {
                                     <div className="dropdown">
                                         <UnitButton />
                                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><a className="col-md-2 dropdown-item" name="Dollars" onClick={(e) => setUnitWrapper(e)} href="#">Dollars</a></li>
-                                            <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnitWrapper(e)} href="#">BB</a></li>
+                                            <li><a className="col-md-2 dropdown-item" name="Dollars" onClick={(e) => setUnitWrapper(e)} href="#/">Dollars</a></li>
+                                            <li><a className="col-md-2 dropdown-item" name="BB" onClick={(e) => setUnitWrapper(e)} href="#/">BB</a></li>
                                         </ul>
                                     </div>
                                 </div>
