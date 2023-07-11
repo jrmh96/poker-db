@@ -212,7 +212,7 @@ export default function EditHand() {
                                         id="history"
                                         name="history"
                                         rows="6"
-                                        value={hand.history}
+                                        defaultValue={hand.history}
                                         maxLength="400"
                                         onChange={(e) => onInputChange(e)}
                                     />
@@ -228,7 +228,7 @@ export default function EditHand() {
                                             id="link"
                                             className="form-control"
                                             name="link"
-                                            value={hand.link}
+                                            defaultValue={hand.link}
                                             onChange={(e) => onInputChange(e)}
                                         />
                                         <label className="form-label" htmlFor="link">Playback Link</label>
@@ -244,7 +244,7 @@ export default function EditHand() {
                                         name="notes"
                                         rows="6"
                                         maxLength="600"
-                                        value={hand.notes}
+                                        defaultValue={hand.notes}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     <p>Notes</p>
@@ -260,7 +260,7 @@ export default function EditHand() {
                                             id="result"
                                             className="form-control"
                                             name="result"
-                                            value={hand.result}
+                                            defaultValue={hand.result}
                                             onChange={(e) => onInputChange(e)}
                                         />
                                         <label className="form-label" htmlFor="result">Result</label>
