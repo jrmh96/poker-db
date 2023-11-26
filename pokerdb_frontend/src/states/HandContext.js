@@ -60,6 +60,7 @@ export function handReducer(currentHand, action) {
 export function formatDate(date){
     // input: javascript Date object
     // output: "YYYY-mm-dd" string rep. of date
+    // Java backend needs date in this format
     const month = date.getMonth() + 1;
     const sDate = date.getFullYear().toString() + "-" + month.toString() + "-" + date.getDate().toString();
     return sDate;

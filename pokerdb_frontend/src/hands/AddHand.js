@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../add-edit-special.scss';
 import { useReducer } from 'react';
 
-import { handReducer, defaultHand, updateHandOnChange } from '../states/HandContext';
+import { handReducer, defaultHand, updateHandOnChange, formatDate } from '../states/HandContext';
 import PinInput from 'react-pin-input';
 
 export default function AddHand() {
@@ -52,6 +52,7 @@ export default function AddHand() {
     const onSubmit = async (e) => {
         e.preventDefault();
         let objToPost = hand;
+        objToPost.date = formatDate(hand.date);
         objToPost.result = calculateResults();
         objToPost.stakes = hand.stakeString;
         await axios.post("http://localhost:8080/addhand", objToPost, {
@@ -61,7 +62,8 @@ export default function AddHand() {
         }).catch(function (error) {
             if (error.response) {
                 console.log("Error message sent from onSubmit: ")
-                console.log(JSON.parse(error.config.data));
+                console.log(error);
+                console.log(JSON.parse(error.response.data));
             }
         });
         navigate("/");

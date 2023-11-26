@@ -44,7 +44,7 @@ export default function EditHand() {
         const startingHand = await axios.get(`http://localhost:8080/hand/${id}`);
         startingHand.data.stakeDecimal = strToStakesMap[startingHand.data.stakes];
         startingHand.data.stakeString = startingHand.data.stakes;
-
+        console.log("Loading...");
         dispatch({
             type: "update",
             field: startingHand.data
@@ -52,10 +52,12 @@ export default function EditHand() {
     }
 
     useEffect(() => {
-        loadHand().then(() => {
-            setLoaded(true);
-        });
-    });
+        if (!loaded) {
+            loadHand().then(() => {
+                setLoaded(true);
+            });
+        }
+    }, []); // Use an empty array here to prevent an infinite loop :)
 
     const calculateResults = () => {
         const stakesNumber = parseFloat(hand.stakeDecimal);
@@ -125,7 +127,7 @@ export default function EditHand() {
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <DatePicker
-                                            selected={dateFromString(hand.date)}
+                                            selected={new Date(hand.date)}
                                             id="datePicker"
                                             name="date"
                                             onChange={(e) => onInputChange(e)}

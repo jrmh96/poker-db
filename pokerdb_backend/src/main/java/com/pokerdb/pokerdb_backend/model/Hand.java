@@ -103,7 +103,10 @@ public class Hand {
         return date;
     }
 
-    // You need to do some error handling here
+    // You should do some error handling here
+    // From Docs: Input must be a
+    // String object representing a date in the format "yyyy-[m]m-[d]d".
+    // The leading zero for mm and dd may also be omitted.
     public void setDate(String input) {
         this.date = Date.valueOf(input);
     }
