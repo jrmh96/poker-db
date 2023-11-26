@@ -80,7 +80,7 @@ export default function Home() {
                                 <tr key={index}>
                                     <th scope="row" key={index}>{page*size + index + 1}</th>
                                     <td>[Tags]<br/> [More Tags]</td>
-                                    <td>{moment(hand.date).format("M/D/YYYY")}</td>
+                                    <td>{moment(hand.date).format("MM/DD/YYYY")}</td>
                                     <td>{hand.cards}</td>
                                     <td>{hand.position}</td>
                                     <td>{hand.stakes}</td>

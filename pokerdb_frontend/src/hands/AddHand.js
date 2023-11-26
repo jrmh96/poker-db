@@ -19,6 +19,8 @@ export default function AddHand() {
     // Set up references to default state values
     const { date, cards, position, stakeString, stakeDecimal, handhist, link, notes, result } = hand;
 
+    console.log(date);
+
     // Wrap set units so that screen doesn't scroll
     const setUnitWrapper = (e) => {
         e.preventDefault();
@@ -91,7 +93,7 @@ export default function AddHand() {
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <DatePicker 
-                                            selected={new Date(date)}
+                                            selected={date}
                                             id="datePicker"
                                             name="date"
                                             onChange={(e) => onInputChange(e)}
