@@ -19,8 +19,6 @@ export default function AddHand() {
     // Set up references to default state values
     const { date, cards, position, stakeString, stakeDecimal, handhist, link, notes, result } = hand;
 
-    console.log(date);
-
     // Wrap set units so that screen doesn't scroll
     const setUnitWrapper = (e) => {
         e.preventDefault();
@@ -48,6 +46,8 @@ export default function AddHand() {
     }
 
     // Submit to axios
+    // onSubmit is double declared in EditHand.js - tech debt
+    // Ideally I could define this once in HandContext.js or somewhere else
     let navigate = useNavigate();
     const onSubmit = async (e) => {
         e.preventDefault();

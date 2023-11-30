@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../add-edit-special.scss';
 import { strToStakesMap } from '../utils/stakesFunctions.js';
 import { useReducer } from 'react';
-import { handReducer, emptyHand, updateHandOnChange } from '../states/HandContext';
+import { handReducer, emptyHand, updateHandOnChange, formatDate } from '../states/HandContext';
 import PinInput from 'react-pin-input';
 
 export default function EditHand() {
@@ -16,9 +16,14 @@ export default function EditHand() {
     // Date from string, note that
     // new Date(dateString) won't work unless
     // dateString is in format YYYY-MM-DDTHH:mm:ss.sssZ (from docs)
+    // We input datestring in format YYYY-MM-DD so need to do some hacking
     const dateFromString = (dateString) => {
-        const [year, month, day] = dateString.split("-").map(part => parseInt(part));
-        return new Date(year, month-1, day);
+        const [year, month, day] = dateString.split("-");
+
+        // Idk why, but inputting dates in this format allows it to work
+        // and outputs midnight of the correct day in the local tz
+        // something to do with Date.parse() I think
+        return new Date(month + "," + day + "," + year);
     }
 
     // Hand states and managers defined in HandContext.js
@@ -44,7 +49,7 @@ export default function EditHand() {
         const startingHand = await axios.get(`http://localhost:8080/hand/${id}`);
         startingHand.data.stakeDecimal = strToStakesMap[startingHand.data.stakes];
         startingHand.data.stakeString = startingHand.data.stakes;
-        console.log("Loading...");
+        startingHand.data.date = dateFromString(startingHand.data.date);
         dispatch({
             type: "update",
             field: startingHand.data
@@ -80,15 +85,19 @@ export default function EditHand() {
     }
 
     // Submit to axios
+    // This is double declared in AddHand.js - tech debt
+    // Ideally I could define this once in HandContext.js or somewhere else
     let navigate = useNavigate();
     const onSubmit = async (e) => {
         e.preventDefault();
-        let objToPut = hand;
 
         // Calculate results in dollars and change stakes to string (e.g. 50NL)
-        objToPut.result = calculateResults();
-        objToPut.stakes = hand.stakeString;
-        await axios.put(`http://localhost:8080/hand/${id}`, objToPut, {
+        let objToPost = hand;
+        objToPost.date = formatDate(hand.date);
+        objToPost.result = calculateResults();
+        objToPost.stakes = hand.stakeString;
+
+        await axios.put(`http://localhost:8080/hand/${id}`, objToPost, {
             headers: {
                 'Content-Type': 'application/json'
             }

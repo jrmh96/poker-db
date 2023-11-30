@@ -1,5 +1,7 @@
 // Functions to manage hand info as react state here
 
+import axios from "axios";
+
 export const emptyHand = {
     date: new Date(),
     cards: "",
@@ -39,6 +41,25 @@ export function updateHandOnChange(evt, dispatchFn) {
     dispatchFn({
         type: 'update',
         field: passedEvent
+    });
+}
+
+export async function submitHand(e, hand, result) {
+    e.preventDefault();
+    let objToPost = hand;
+    objToPost.date = formatDate(hand.date);
+    objToPost.result = result;
+    objToPost.stakes = hand.stakeString;
+    await axios.post("http://localhost:8080/addhand", objToPost, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).catch(function (error) {
+        if (error.response) {
+            console.log("Error message sent from onSubmit: ")
+            console.log(error);
+            console.log(JSON.parse(error.response.data));
+        }
     });
 }
 
