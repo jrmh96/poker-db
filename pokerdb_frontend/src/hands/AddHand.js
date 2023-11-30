@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../add-edit-special.scss';
 import { useReducer } from 'react';
 
-import { handReducer, defaultHand, updateHandOnChange } from '../states/HandContext';
+import { handReducer, defaultHand, updateHandOnChange, formatDate } from '../states/HandContext';
 import PinInput from 'react-pin-input';
 
 export default function AddHand() {
@@ -46,10 +46,13 @@ export default function AddHand() {
     }
 
     // Submit to axios
+    // onSubmit is double declared in EditHand.js - tech debt
+    // Ideally I could define this once in HandContext.js or somewhere else
     let navigate = useNavigate();
     const onSubmit = async (e) => {
         e.preventDefault();
         let objToPost = hand;
+        objToPost.date = formatDate(hand.date);
         objToPost.result = calculateResults();
         objToPost.stakes = hand.stakeString;
         await axios.post("http://localhost:8080/addhand", objToPost, {
@@ -59,7 +62,8 @@ export default function AddHand() {
         }).catch(function (error) {
             if (error.response) {
                 console.log("Error message sent from onSubmit: ")
-                console.log(JSON.parse(error.config.data));
+                console.log(error);
+                console.log(JSON.parse(error.response.data));
             }
         });
         navigate("/");
@@ -91,7 +95,7 @@ export default function AddHand() {
                                 <div className="col-md-4">
                                     <div className="form-outline">
                                         <DatePicker 
-                                            selected={new Date(date)}
+                                            selected={date}
                                             id="datePicker"
                                             name="date"
                                             onChange={(e) => onInputChange(e)}
